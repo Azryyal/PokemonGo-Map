@@ -20,6 +20,7 @@ Search Architecture:
 import logging
 import time
 import math
+import platform
 import threading
 
 from threading import Thread, Lock
@@ -267,8 +268,10 @@ def check_login(args, account, api, position):
                 i += 1
                 log.error('Failed to login to Pokemon Go with account %s. Trying again in %g seconds', account['username'], args.login_delay)
                 time.sleep(args.login_delay)
-
-    api.activate_signature("/root/PoGoMap/pogom/libencrypt.so")
+    if platform.system() == 'Windows':
+        api.activate_signature(".\pogom\encrypt.dll")
+    else:
+        api.activate_signature(".\pogom\libencrypt.so")
     log.debug('Login for account %s successful', account['username'])
 
 def map_request(api, position):
